@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UEP Lost and Found</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="app-background"></div>
+
+    <nav id="main-nav" class="hidden">
+        <div class="nav-brand">
+            <img src="LARAWAN/OIP.jpg" alt="UEP Logo" class="nav-logo">
+            <h1>UEP Lost & Found</h1>
+        </div>
+        <div class="nav-links">
+            <span id="welcome-user-msg">Welcome, User</span>
+            <button onclick="logout()" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </nav>
+
+
+    <section id="login-view" class="auth-container active-view">
+        <div class="auth-card">
+            <div class="auth-header">
+                <img src="LARAWAN/OIP.jpg" alt="UEP Logo" class="auth-logo header-logo">
+                <h3>UEP Lost and Found</h3>
+                <h2>Login</h2>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="login-username" name="username" required placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="login-password" name="password" required placeholder="Password">
+                </div>
+                <button type="submit" class="btn-auth"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </form>
+            <div class="auth-footer">
+                Not a Member? <a href="#" onclick="switchView('signup-view')">Signup</a>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="signup-view" class="auth-container hidden">
+        <div class="auth-card signup-card">
+             <div class="auth-header">
+                <img src="LARAWAN/OIP.jpg" alt="UEP Logo" class="auth-logo header-logo">
+                <h2>Sign Up</h2>
+            </div>
+            <form id="signup-form">
+                <div class="form-row">
+                    <input type="text" id="reg-fname" name="fname" required placeholder="First Name">
+                    <input type="text" id="reg-mname" name="mname" placeholder="Middle Name">
+                    <input type="text" id="reg-lname" name="lname" required placeholder="Last Name">
+                </div>
+
+                <div class="input-group full-width">
+                     <select id="reg-usertype" name="usertype" required>
+                        <option value="" disabled selected>Select User Type</option>
+                        <option value="Student">Student</option>
+                        <option value="Faculty">Faculty</option>
+                        <option value="UEP Staff">UEP Staff</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+
+                <div class="input-group full-width" id="admin-request-container" style="display: none;">
+                    <label>
+                        <input type="checkbox" id="reg-request-admin" name="request_admin"> Request Admin
+                    </label>
+                </div>
+
+                <div class="input-group full-width">
+                    <input type="email" id="reg-email" name="email" required placeholder="Email Address">
+                </div>
+
+                <div class="form-row">
+                    <input type="text" id="reg-username" name="username" required placeholder="Username">
+                    <input type="password" id="reg-password" name="password" required placeholder="Password">
+                </div>
+
+                <button type="submit" class="btn-auth">Sign Up</button>
+            </form>
+             <div class="auth-footer">
+                Already a member? <a href="#" onclick="switchView('login-view')">Login</a>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="admin-dash-view" class="dashboard-container hidden">
+        <div class="dash-sidebar">
+            <button class="side-btn active" onclick="switchAdminTab('admin-users')"><i class="fas fa-users"></i> Manage Users</button>
+            <button class="side-btn" onclick="switchAdminTab('admin-user-info')"><i class="fas fa-info-circle"></i> User Information</button>
+            <button class="side-btn" onclick="switchAdminTab('admin-items')"><i class="fas fa-boxes"></i> Manage Items</button>
+            <button class="side-btn" onclick="switchAdminTab('admin-claims')"><i class="fas fa-hand-paper"></i> Manage Claims</button>
+            <button class="side-btn" onclick="switchAdminTab('admin-pending')"><i class="fas fa-user-clock"></i> Pending Admins</button>
+        </div>
+
+        <div class="dash-content">
+            <div id="admin-users" class="admin-tab-content active-tab">
+                <h2>All Registered Users</h2>
+                <div class="table-container">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-items" class="admin-tab-content hidden">
+                 <div class="dash-header-row">
+                    <h2>All Reported Items</h2>
+                    <input type="text" id="admin-search" placeholder="Search items..." onkeyup="adminSearchItems()">
+                </div>
+                <div class="table-container">
+                    <table id="items-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Item Name</th>
+                                <th>Status</th>
+                                <th>Reported By</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="items-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-user-info" class="admin-tab-content hidden">
+                <h2><i class="fas fa-users"></i> User Information</h2>
+                <div id="user-info-grid" class="user-info-grid">
+                    <!-- User information cards will be populated here -->
+                </div>
+            </div>
+
+            <div id="admin-claims" class="admin-tab-content hidden">
+                <h2><i class="fas fa-hand-paper"></i> Manage Claims</h2>
+                <div class="table-container">
+                    <table id="claims-table">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Claimant</th>
+                                <th>Claim Description</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="claims-table-body">
+                            <!-- Claims will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-pending" class="admin-tab-content hidden">
+                <h2><i class="fas fa-user-clock"></i> Pending Admin Requests</h2>
+                <div class="table-container">
+                    <table id="pending-admins-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-admins-table-body">
+                            <!-- Pending admin requests will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="user-dash-view" class="dashboard-container hidden">
+        <div class="dash-sidebar">
+             <button class="side-btn active" onclick="switchUserTab('user-view-items')"><i class="fas fa-eye"></i> View Items</button>
+             <button class="side-btn" onclick="switchUserTab('user-report-item')"><i class="fas fa-plus-circle"></i> Report Item</button>
+             <button class="side-btn" onclick="switchUserTab('user-my-claims')"><i class="fas fa-hand-paper"></i> My Claims</button>
+             <button class="side-btn" onclick="switchUserTab('user-profile')"><i class="fas fa-user"></i> Profile</button>
+        </div>
+         <div class="dash-content">
+             
+            <div id="user-view-items" class="user-tab-content active-tab">
+                 <div class="dash-header-row">
+                    <h2>Lost & Found Feed</h2>
+                     <input type="text" id="user-search" placeholder="Search items..." onkeyup="userSearchItems()">
+                </div>
+                <div id="items-grid" class="items-grid">
+                    </div>
+             </div>
+
+             <div id="user-report-item" class="user-tab-content hidden">
+                 <h2>Report a Lost or Found Item</h2>
+                 <div class="report-card">
+                     <form id="report-form" enctype="multipart/form-data">
+                         <div class="input-group">
+                             <label>Status:</label>
+                             <select id="item-status" name="status" required>
+                                 <option value="Lost">Lost Item</option>
+                                 <option value="Found">Found Item</option>
+                             </select>
+                         </div>
+                         <div class="input-group">
+                             <label>Item Name/Title:</label>
+                             <input type="text" id="item-name" name="name" required placeholder="e.g., Black Backpack">
+                         </div>
+                         <div class="input-group">
+                             <label>Description & Location:</label>
+                             <textarea id="item-desc" name="desc" rows="4" required placeholder="Details about the item and where it was lost/found..."></textarea>
+                         </div>
+                         <div class="input-group">
+                             <label>Upload Image (optional):</label>
+                             <input type="file" id="item-image-upload" name="image_upload" accept="image/*">
+                             <img id="image-preview" src="#" alt="Preview" class="hidden">
+                         </div>
+                         <button type="submit" class="btn-auth">Submit Report</button>
+                     </form>
+                 </div>
+             </div>
+
+             <div id="user-my-claims" class="user-tab-content hidden">
+                 <h2><i class="fas fa-hand-paper"></i> My Claims</h2>
+                 <div class="table-container">
+                     <table id="user-claims-table">
+                         <thead>
+                             <tr>
+                                 <th>Item Name</th>
+                                 <th>Claim Description</th>
+                                 <th>Status</th>
+                                 <th>Date</th>
+                             </tr>
+                         </thead>
+                         <tbody id="user-claims-table-body">
+                             <!-- User claims will be populated here -->
+                         </tbody>
+                     </table>
+                 </div>
+             </div>
+
+             <div id="user-profile" class="user-tab-content hidden">
+                 <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+                 <div class="profile-card">
+                     <form id="profile-form">
+                         <div class="form-row">
+                             <div class="input-group">
+                                 <label>First Name:</label>
+                                 <input type="text" id="profile-fname" name="fname" required>
+                             </div>
+                             <div class="input-group">
+                                 <label>Middle Name:</label>
+                                 <input type="text" id="profile-mname" name="mname">
+                             </div>
+                             <div class="input-group">
+                                 <label>Last Name:</label>
+                                 <input type="text" id="profile-lname" name="lname" required>
+                             </div>
+                         </div>
+
+                         <div class="input-group full-width">
+                             <label>Email Address:</label>
+                             <input type="email" id="profile-email" name="email" required>
+                         </div>
+
+                         <div class="input-group full-width">
+                             <label>Username:</label>
+                             <input type="text" id="profile-username" name="username" required>
+                         </div>
+
+                         <div class="input-group full-width">
+                             <label>New Password (leave blank to keep current):</label>
+                             <input type="password" id="profile-password" name="password" placeholder="Enter new password">
+                         </div>
+
+                         <button type="submit" class="btn-auth"><i class="fas fa-save"></i> Update Profile</button>
+                     </form>
+                 </div>
+             </div>
+         </div>
+    </section>
+
+
+    <script src="./script.js"></script>
+</body>
+</html>
